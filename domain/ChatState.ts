@@ -1,0 +1,3 @@
+export enum ChatState {
+    TO_BE_CONNECTED, TO_BE_LOGGED, LOGGED, DISCONNECTED
+}
