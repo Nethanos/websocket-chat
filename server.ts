@@ -3,9 +3,10 @@ import { ChatSocket } from './domain/ChatSocket';
 import { ChatState } from './domain/ChatState';
 import { Message } from './domain/Message';
 import { NewUserMessage } from './domain/NewUserMessage';
+import { PrivateMessage } from './domain/PrivateMessage';
 import { PublicMessage } from './domain/PublicMessage';
 import { UserLogoutMessage } from './domain/UserLogoutMessage';
-import { AvaliableCommand, handlePossibleCommand } from './helper/CommandMessageHandler';
+import { AvaliableCommand, getUsernameFromText, handlePossibleCommand } from './helper/CommandMessageHandler';
 
 var userSessionList = new Array<ChatSocket>();
 
@@ -20,6 +21,8 @@ server.on('connection', (socket: Socket) => {
     userSessionList.push(new ChatSocket(socket));
 
     socket.write("Welcome to our Chat! Please choose a username!");
+
+    socket.setMaxListeners(1);
 
     socket.on('data', (receivedText: any) => {
         handleDataFromSocket(receivedText.toString("utf-8").trim(), socket);
@@ -48,28 +51,48 @@ function handleDataFromSocket(receivedText: any, socket: Socket) {
             broadcastMessage(new UserLogoutMessage(referencedSocket.username!), referencedSocket);
             return;
         }
+        if (command === AvaliableCommand.PRIVATE_MESSAGE) {
+            const receiverSocket = getValidReceiver(receivedText);
 
+            if (!!receiverSocket.username) {
+                receiverSocket.socket.write(new PrivateMessage(referencedSocket.username!, receivedText).send());
+                return;
+            }
+        }
         broadcastMessage(new PublicMessage(receivedText, referencedSocket.username), referencedSocket);
     }
 }
 
-
-function isUsernameAvaliable(receivedText: any) {
-    return !userSessionList.some(userSession => userSession.username === receivedText.toString("utf-8"));
-
-}
-
-
 function loginNewUser(receivedText: any, chatSocket: ChatSocket): void {
-    console.log(receivedText);
     if (isUsernameAvaliable(receivedText)) {
         chatSocket.username = receivedText;
         chatSocket.state = ChatState.LOGGED;
         broadcastMessage(new NewUserMessage(chatSocket.username!), chatSocket);
         return;
     }
-    chatSocket.socket.write("User already taken! Please chooser another username!");
+    chatSocket.socket.write("Username invalid or already taken! Please chooser another username!");
 }
+
+function isUsernameAvaliable(receivedText: any) {
+    return !userSessionList.some(userSession => userSession.username === receivedText.toString("utf-8")) && !!receivedText;
+
+}
+
+function getValidReceiver(text: string): ChatSocket {
+
+    const username = getUsernameFromText(text);
+
+    const receiverSocket = getSocketFromUsername(username);
+
+    return receiverSocket;
+
+}
+
+
+function getSocketFromUsername(username: string): ChatSocket {
+    return userSessionList.filter(userSession => userSession.username === username)[0];
+}
+
 
 function broadcastMessage(message: Message, chatSocket: ChatSocket): void {
 
