@@ -2,14 +2,18 @@
   "name": "web-socket-chat",
   "version": "1.0.0",
   "description": "",
-  "main": "index.js",
+  "main": "src/Server.ts",
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1",
-    "start": "ts-node-dev --inspect=0.0.0.0:7001 --exit-child --respawn server.ts"
+    "start": "node src/Server.js",
+    "build": "tsc src/Server.ts",
+    "dev": "ts-node-dev --inspect=0.0.0.0:7001 --exit-child --respawn src/Server.ts",
+    "build-and-run": "npm run build && npm start"
   },
   "author": "",
   "license": "ISC",
   "dependencies": {
+    "mocha": "^8.2.1",
     "nanoid": "^3.1.20"
   },
   "devDependencies": {

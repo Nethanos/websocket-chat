@@ -1,5 +1,8 @@
 import { Message } from "./Message";
 
+/**
+ * Classe responsável por enviar uma mensagem privada a um receptor.
+ */
 export class PrivateMessage implements Message {
 
     fromUser: string;

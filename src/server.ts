@@ -1,7 +1,7 @@
 import * as net from 'net';
 import { Socket } from 'net';
 import { ChatSocket } from './domain/ChatSocket';
-import { ChatState } from './domain/ChatState';
+import { ClientConnectionState } from './domain/ClientConnectionState';
 import { Message } from './domain/Message';
 import { NewUserMessage } from './domain/NewUserMessage';
 import { PrivateMessage } from './domain/PrivateMessage';
@@ -58,16 +58,15 @@ function handleDataFromSocket(receivedText: any, socket: Socket) {
     const referencedSocket = userSessionList
         .filter(userSession => userSession.socket.ref() === socket.ref())[0];
 
-    if (referencedSocket.state === ChatState.TO_BE_LOGGED) {
+    if (referencedSocket.state === ClientConnectionState.TO_BE_LOGGED) {
         loginNewUser(receivedText, referencedSocket);
         return;
     }
-    if (referencedSocket.state === ChatState.LOGGED) {
-        const command = handlePossibleCommand(receivedText, referencedSocket);
+    if (referencedSocket.state === ClientConnectionState.LOGGED) {
+        const command = handlePossibleCommand(receivedText);
 
         handleCommandMessage(command, socket, receivedText, referencedSocket);
 
-        broadcastMessage(new PublicMessage(receivedText, referencedSocket.username), referencedSocket);
     }
 }
 
@@ -97,6 +96,7 @@ function handleCommandMessage(command: AvaliableCommand, socket: Socket, receive
         referencedSocket.socket.write(SystemMessage.USER_NOT_FOUND);
         return;
     }
+    broadcastMessage(new PublicMessage(receivedText, referencedSocket.username), referencedSocket);
 }
 
 /**
@@ -107,7 +107,7 @@ function handleCommandMessage(command: AvaliableCommand, socket: Socket, receive
 function loginNewUser(receivedText: any, chatSocket: ChatSocket): void {
     if (isUsernameAvaliable(receivedText)) {
         chatSocket.username = receivedText;
-        chatSocket.state = ChatState.LOGGED;
+        chatSocket.state = ClientConnectionState.LOGGED;
         broadcastMessage(new NewUserMessage(chatSocket.username!), chatSocket);
         return;
     }
@@ -155,7 +155,7 @@ function getSocketFromUsername(username: string): ChatSocket {
 function broadcastMessage(message: Message, chatSocket: ChatSocket): void {
 
     userSessionList.forEach(userSession => {
-        if (chatSocket.socket.ref() !== userSession.socket.ref() && userSession.state === ChatState.LOGGED) {
+        if (chatSocket.socket.ref() !== userSession.socket.ref() && userSession.state === ClientConnectionState.LOGGED) {
             userSession.socket.write(message.send());
         }
 

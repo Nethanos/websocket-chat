@@ -1,6 +1,9 @@
 import { runInThisContext } from "vm";
 import { Message } from "./Message";
 
+/**
+ * Classe responsável por enviar uma mensagem pública
+ */
 export class PublicMessage implements Message {
 
     content: string;

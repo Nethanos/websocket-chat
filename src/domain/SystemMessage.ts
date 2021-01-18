@@ -1,3 +1,6 @@
+/**
+ * Classe responsável por guardar as constantes do sistema.
+ */
 export class SystemMessage {
 
     static USER_NOT_FOUND = "User not found!";

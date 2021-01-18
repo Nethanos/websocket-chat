@@ -1,12 +1,15 @@
 import { Socket } from "net";
 import { nanoid } from 'nanoid';
-import { ChatState } from "./ChatState";
+import { ClientConnectionState } from "./ClientConnectionState";
 
+/**
+ * Classe responsável por abstrair um socket padrao do node e adicionar atributos necessários.
+ */
 export class ChatSocket {
     socket: Socket;
     id: string;
     username?: string;
-    state: ChatState = ChatState.TO_BE_LOGGED;
+    state: ClientConnectionState = ClientConnectionState.TO_BE_LOGGED;
 
     constructor(socket: Socket) {
         this.id = nanoid();
