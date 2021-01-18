@@ -137,11 +137,21 @@ function getValidReceiver(text: string): ChatSocket {
 
 }
 
+/**
+ * Return the socket referenced by the username.
+ * It has to always return only one chatSocket.
+ * @param username username receiver
+ */
 function getSocketFromUsername(username: string): ChatSocket {
     return userSessionList.filter(userSession => userSession.username === username)[0];
 }
 
 
+/**
+ * Método responsável por enviar uma mensagem para todos os possíveis clients conectados, exceto o emissor.
+ * @param message Texto a ser enviado
+ * @param chatSocket socket do emissor
+ */
 function broadcastMessage(message: Message, chatSocket: ChatSocket): void {
 
     userSessionList.forEach(userSession => {
