@@ -8,11 +8,12 @@
     "start": "node src/Server.js",
     "build": "tsc src/Server.ts",
     "dev": "ts-node-dev --inspect=0.0.0.0:7001 --exit-child --respawn src/Server.ts",
-    "build-and-run": "npm run build && npm start"
+    "build-and-start": "npm run build && npm start"
   },
   "author": "",
   "license": "ISC",
   "dependencies": {
+    "dotenv": "^8.2.0",
     "mocha": "^8.2.1",
     "nanoid": "^3.1.20"
   },

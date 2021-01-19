@@ -1,4 +1,5 @@
 import * as net from 'net';
+import 'dotenv/config';
 import { Socket } from 'net';
 import { ChatSocket } from './domain/ChatSocket';
 import { ClientConnectionState } from './domain/ClientConnectionState';
@@ -10,7 +11,7 @@ import { logInNewUser } from './services/NewUser.service';
 
 export const userSessionList = new Array<ChatSocket>();
 
-const PORT = 9898;
+const PORT = process.env.PORT || 9898;
 
 /**
  * Método responsável por criar o socket servidor.
