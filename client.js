@@ -7,15 +7,17 @@ var stdin = process.stdin;
 
 stdin.on('data', function (text) {
     var data = text.toString("utf-8");
+    stdin.setMaxListeners(1);
     client.write(data);
 });
 
 
 client.on("close", () => {
+    client.setMaxListeners(1);
     client.destroy();
-    stdin.destroy();
 })
 
 client.on('data', function (text) {
+    client.setMaxListeners(1);
     console.log(text.toString("utf-8"));
 });
