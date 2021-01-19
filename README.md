@@ -21,7 +21,7 @@ não devem ser burras, ou seja, ter apenas getters e setters.
 
 # Como rodar(servidor):
 
-*Todos os comandos devem ser rodados sem as aspas.
+*Todos os comandos devem ser rodados sem as aspas.*
 
 - Baixe o projeto e na pasta raíz use o comando "npm install". Este comando instalará as dependências do projeto.
 - O projeto está configurado para rodar na porta 9898, mas se desejar rodar em qualquer outra, basta criar um arquivo .env na raíz do projeto e 
@@ -29,7 +29,7 @@ criar a variável PORT, com o valor da porta desejado, em caso de dúvidas, segu
 - Após isso, para rodar o servidor, use o comando "npm build-and-start". Este comando transpilará o código feito em Typescript para Javascript
 e rodará o código buildado. O output no seu console deverá ser "Server opened at ${PORT}".
 
-#Como rodar(client):
+# Como rodar(client):
 - Na pasta raíz do projeto, há um arquivo chamado client.js, para utilizá-lo, basta rodar o comando "node client.js" em qualquer terminal desejado
 que suporte o NodeJS.
 - Selecione o seu nome de usuário quando requisitado no terminal e basta começar a usar.
